@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+
 const baseUrl = "http://localhost:4000/api/v1";
 
 export const loginUser = createAsyncThunk(
@@ -17,7 +18,7 @@ export const loginUser = createAsyncThunk(
 );
 
 export const getMyProfile = createAsyncThunk(
-  "/user/getMyProfile",
+  "users/getMyProfile",
   async (_, { rejectWithValue }) => {
     try {
       const response = await axios.get(`${baseUrl}/user/me`, {
@@ -31,7 +32,7 @@ export const getMyProfile = createAsyncThunk(
 );
 
 export const logoutUser = createAsyncThunk(
-  "/user/logoutUser",
+  "users/logoutUser",
   async (_, { rejectWithValue }) => {
     try {
       const response = await axios.get(`${baseUrl}/user/logout`, {
@@ -43,14 +44,15 @@ export const logoutUser = createAsyncThunk(
     }
   }
 );
-interface state {
-    user:{},
-    isAuthenticated:boolean,
-    isLoading:boolean,
-    error:null | string
 
+interface UserState {
+  user: Record<string, any> | null;
+  isAuthenticated: boolean;
+  isLoading: boolean;
+  error: null | string;
 }
-const initialState:user = {
+
+const initialState: UserState = {
   user: null,
   isAuthenticated: false,
   isLoading: false,
@@ -63,6 +65,7 @@ const userSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
+      // Login cases
       .addCase(loginUser.pending, (state) => {
         state.isLoading = true;
         state.error = null;
@@ -74,8 +77,9 @@ const userSlice = createSlice({
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.isLoading = false;
-        state.error = action.error.message;
+        state.error = action.payload as string;
       })
+      // Get profile cases
       .addCase(getMyProfile.pending, (state) => {
         state.isLoading = true;
         state.error = null;
@@ -83,6 +87,26 @@ const userSlice = createSlice({
       .addCase(getMyProfile.fulfilled, (state, action) => {
         state.isLoading = false;
         state.user = action.payload;
+      })
+      .addCase(getMyProfile.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload as string;
+      })
+      // Logout cases
+      .addCase(logoutUser.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(logoutUser.fulfilled, (state) => {
+        state.isLoading = false;
+        state.isAuthenticated = false;
+        state.user = null;
+      })
+      .addCase(logoutUser.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload as string;
       });
   },
 });
+
+export default userSlice.reducer;
