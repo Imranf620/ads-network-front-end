@@ -2,8 +2,51 @@
 @tailwind components;
 @tailwind utilities;
 
-*{
+* {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+}
+
+.custom-toast-container .Toastify__toast {
+  border-radius: 8px;
+  font-family: "Inter", sans-serif;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.custom-toast-container .Toastify__toast--success {
+  background-color: #4caf50;
+  color: white;
+}
+
+.custom-toast-container .Toastify__toast--error {
+  background-color: #f44336;
+  color: white;
+}
+
+.custom-toast-container .Toastify__toast--info {
+  background-color: #2196f3;
+  color: white;
+}
+
+.custom-toast-container .Toastify__toast--warning {
+  background-color: #ff9800;
+  color: white;
+}
+
+.custom-toast-container .Toastify__toast-body {
+  font-size: 14px;
+  padding: 12px 20px;
+}
+
+.custom-toast-container .Toastify__progress-bar {
+  background-color: #ffffff;
+  height: 4px;
+}
+
+/* Add hover effect on toast */
+.custom-toast-container .Toastify__toast:hover {
+  opacity: 1;
+  transform: scale(1.05);
+  transition: all 0.3s ease;
 }
