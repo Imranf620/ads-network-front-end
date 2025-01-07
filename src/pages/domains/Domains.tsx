@@ -18,6 +18,7 @@ import {
   InputLabel,
   FormControl,
   SelectChangeEvent,
+  CircularProgress,
 } from "@mui/material";
 import { visuallyHidden } from "@mui/utils";
 import CreateDomainModel from "../../components/createDomainModel/CreateDomainModel";
@@ -31,7 +32,8 @@ const Domains = () => {
   const [search, setSearch] = useState<string>("");
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const [showCreateDomainModel, setShowCreateDomainModel] = useState<boolean>(false);
+  const [showCreateDomainModel, setShowCreateDomainModel] =
+    useState<boolean>(false);
   const [filterType, setFilterType] = useState<string>("");
 
   const dispatch = useAppDispatch();
@@ -63,11 +65,16 @@ const Domains = () => {
     setOrderBy(property);
   };
 
-  const handleChangePage = (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
+  const handleChangePage = (
+    event: React.MouseEvent<HTMLButtonElement> | null,
+    newPage: number
+  ) => {
     setPage(newPage);
   };
 
-  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChangeRowsPerPage = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
@@ -96,9 +103,16 @@ const Domains = () => {
     return 0;
   });
 
-  const emptyRows = rowsPerPage - Math.min(rowsPerPage, sortedDomains.length - page * rowsPerPage);
+  const emptyRows =
+    rowsPerPage -
+    Math.min(rowsPerPage, sortedDomains.length - page * rowsPerPage);
 
-  if (loading) return <div>Loading...</div>;
+  if (loading)
+    return (
+      <div className="flex justify-center">
+        <CircularProgress />
+      </div>
+    );
   if (error) return <div>Error: {error}</div>;
 
   return (
@@ -113,9 +127,13 @@ const Domains = () => {
           value={search}
           className="max-w-lg"
         />
-        <FormControl variant="outlined"  className="max-w-xs ml-4 w-44">
+        <FormControl variant="outlined" className="max-w-xs ml-4 w-44">
           <InputLabel>Filter by Type</InputLabel>
-          <Select value={filterType} onChange={handleFilterChange} label="Filter by Type">
+          <Select
+            value={filterType}
+            onChange={handleFilterChange}
+            label="Filter by Type"
+          >
             <MenuItem value="">All Types</MenuItem>
             <MenuItem value="button">Button</MenuItem>
             <MenuItem value="redirect">Redirect</MenuItem>
@@ -123,7 +141,9 @@ const Domains = () => {
           </Select>
         </FormControl>
       </div>
-      <Button onClick={() => setShowCreateDomainModel(true)}>Create Domain</Button>
+      <Button onClick={() => setShowCreateDomainModel(true)}>
+        Create Domain
+      </Button>
       <TableContainer component={Paper} className="shadow-lg rounded-lg">
         <Table sx={{ minWidth: 650 }} aria-label="domains table">
           <TableHead>
@@ -137,7 +157,9 @@ const Domains = () => {
                   Domain
                   {orderBy === "domain" ? (
                     <span style={visuallyHidden}>
-                      {order === "desc" ? "sorted descending" : "sorted ascending"}
+                      {order === "desc"
+                        ? "sorted descending"
+                        : "sorted ascending"}
                     </span>
                   ) : null}
                 </TableSortLabel>
@@ -174,7 +196,9 @@ const Domains = () => {
       />
       {showCreateDomainModel && (
         <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center">
-          <CreateDomainModel setShowCreateDomainModel={setShowCreateDomainModel} />
+          <CreateDomainModel
+            setShowCreateDomainModel={setShowCreateDomainModel}
+          />
         </div>
       )}
     </div>

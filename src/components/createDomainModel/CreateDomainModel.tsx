@@ -46,7 +46,7 @@ const CreateDomainModel = ({ setShowCreateDomainModel, addDomain }: any) => {
             type="text"
             placeholder="Enter domain"
             value={newdomain.domain}
-            onChange={(e) => setnewdomain({ ...newdomain, domain: e.target.value })}
+            onChange={(e) => setnewdomain({ ...newdomain, domain: e.target.value.toLowerCase() })}
             className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 placeholder-gray-400"
           />
         </div>

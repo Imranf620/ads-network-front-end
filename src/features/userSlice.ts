@@ -31,6 +31,29 @@ export const getMyProfile = createAsyncThunk(
   }
 );
 
+interface RegisterPayload {
+  email: string;
+  password: string;
+  socialMedia?: string;
+  accountId: string;
+  name: string;
+  accountType: string;
+  role: string;
+}
+export const regsiter = createAsyncThunk(
+  "/regsiter",
+  async (user:RegisterPayload, { rejectWithValue }) => {
+    try {
+      const response = await axios.post(`${baseUrl}/user/register`, user, {
+        withCredentials: true,
+      });
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data?.message || error.message);
+    }
+  }
+);
+
 export const logoutUser = createAsyncThunk(
   "users/logoutUser",
   async (_, { rejectWithValue }) => {
@@ -44,6 +67,51 @@ export const logoutUser = createAsyncThunk(
     }
   }
 );
+
+export const requestForAds = createAsyncThunk("/requestForAds", async (data: any, { rejectWithValue }) => {
+  try {
+    const response = await axios.post(`${baseUrl}/user/requestForAd`, data, {
+      withCredentials: true,
+    });
+    return response.data;
+  } catch (error: any) {
+    return rejectWithValue(error.response?.data?.message || error.message);
+  }
+})
+
+export const myRequestsForAd = createAsyncThunk("/my-requests", async(_,{rejectWithValue})=>{
+  try {
+    const response = await axios.get(`${baseUrl}/user/myRequestsForAd`, {
+      withCredentials: true,
+    });
+    return response.data;
+  } catch (error: any) {
+    return rejectWithValue(error.response?.data?.message || error.message);
+  }
+})
+
+export const getAllUsers = createAsyncThunk("/all-users", async(_,{rejectWithValue})=>{
+  try {
+    const response = await axios.get(`${baseUrl}/user/all`, {
+      withCredentials: true,
+    });
+    return response.data;
+  } catch (error: any) {
+    return rejectWithValue(error.response?.data?.message || error.message);
+  }
+})
+
+export const approveAdsRequest = createAsyncThunk("/approveAds", async(data: any,{rejectWithValue})=>{
+  try {
+    const response = await axios.put(`${baseUrl}/user/approveAdRequest`, data, {
+      withCredentials: true,
+    });
+    return response.data;
+  } catch (error: any) {
+    return rejectWithValue(error.response?.data?.message || error.message);
+  }
+})
+
 
 interface UserState {
   user: Record<string, any> | null;
@@ -86,6 +154,7 @@ const userSlice = createSlice({
       })
       .addCase(getMyProfile.fulfilled, (state, action) => {
         state.isLoading = false;
+        state.isAuthenticated = true;
         state.user = action.payload;
       })
       .addCase(getMyProfile.rejected, (state, action) => {
