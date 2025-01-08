@@ -65,7 +65,75 @@ export const createDomain = createAsyncThunk(
 
       return response.data; // Response will already be parsed as JSON by axios
     } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || "An unexpected error occurred");
+      return rejectWithValue(
+        error.response?.data?.message || "An unexpected error occurred"
+      );
+    }
+  }
+);
+export const deleteDomain = createAsyncThunk(
+  "/deleteDomain",
+  async (id: any, { rejectWithValue }) => {
+    try {
+      const response = await axios.delete(`${baseUrl}/domain/delete/${id}`, {
+        withCredentials: true,
+      });
+
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(
+        error.response?.data?.message || "An unexpected error occurred"
+      );
+    }
+  }
+);
+
+export const toggleRedirectActivity = createAsyncThunk(
+  "/toggleRedirectActivity",
+  async (id: any, { rejectWithValue }) => {
+    try {
+      const response = await axios.put(
+        `${baseUrl}/domain/update/${id}`,
+        {},
+        { withCredentials: true }
+      );
+
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(
+        error.response?.data?.message || "An unexpected error occurred"
+      );
+    }
+  }
+);
+
+export const uploadFile = createAsyncThunk(
+  "/uploadFile",
+  async ({ domainId, file }: any, { rejectWithValue }) => {
+    console.log(domainId);
+    console.log(file);
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("domainId", domainId);
+    try {
+      const response = await axios.post(
+        `${baseUrl}/file/upload`,
+        
+          formData,
+
+        {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(
+        error.response?.data?.message || "An unexpected error occurred"
+      );
     }
   }
 );

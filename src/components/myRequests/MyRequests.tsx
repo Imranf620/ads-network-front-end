@@ -150,6 +150,17 @@ const MyRequests = () => {
                   {request.approved ? "Approved" : "Pending"}
                 </Typography>
 
+                {request.approved && request.assignedDomain && (
+                  <div className="mt-4">
+
+                    <Typography>
+                      Total Cicks:
+                    {request.totalClicks}
+
+                    </Typography>
+                  </div>
+                )}
+
                 {/* Show "Copy Embed Code" button if the request is approved */}
                 {request.approved && request.assignedDomain && (
                   <div className="mt-4">

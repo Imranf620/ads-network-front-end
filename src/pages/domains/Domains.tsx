@@ -1,6 +1,10 @@
 import { useEffect, useState } from "react";
 import { useAppDispatch } from "../../hooks/useAppDispatch";
-import { getAllDomains } from "../../features/domainsSlice";
+import {
+  deleteDomain,
+  getAllDomains,
+  toggleRedirectActivity,
+} from "../../features/domainsSlice";
 import {
   Table,
   TableBody,
@@ -22,6 +26,10 @@ import {
 } from "@mui/material";
 import { visuallyHidden } from "@mui/utils";
 import CreateDomainModel from "../../components/createDomainModel/CreateDomainModel";
+import DeleteIcon from "@mui/icons-material/Delete";
+import { toast } from "react-toastify";
+import { DriveFolderUpload } from "@mui/icons-material";
+import DriveFolderUploadModel from "../../components/driveFolderUploadModel/DriveFolderUploadModel"
 
 const Domains = () => {
   const [allDomains, setAllDomains] = useState<any[]>([]);
@@ -35,6 +43,8 @@ const Domains = () => {
   const [showCreateDomainModel, setShowCreateDomainModel] =
     useState<boolean>(false);
   const [filterType, setFilterType] = useState<string>("");
+  const [uploadModel, setUploadMode] = useState<boolean>(false);
+  const [selectedDomain, setSelectedDomain] = useState<any | null>(null);
 
   const dispatch = useAppDispatch();
 
@@ -93,6 +103,31 @@ const Domains = () => {
       (filterType ? domain.type === filterType : true)
     );
   });
+
+  const handleDelete = async (id: any) => {
+    try {
+      const response = await dispatch(deleteDomain(id));
+      console.log(response.payload);
+      if (response.payload.success) {
+        toast.success(response.payload.message);
+        setAllDomains(allDomains.filter((domain) => domain._id !== id));
+      } else {
+        toast.error(response.payload.message);
+      }
+    } catch (error: any) {
+      return;
+    }
+  };
+
+  const toggleRedirectStatus = async (id: any) => {
+    const res = await dispatch(toggleRedirectActivity(id));
+    console.log(res);
+    if (res.payload.success) {
+      toast.success(res.payload.message);
+    } else {
+      toast.error(res.payload.message);
+    }
+  };
 
   const sortedDomains = filteredDomains.sort((a, b) => {
     if (orderBy === "domain") {
@@ -165,6 +200,10 @@ const Domains = () => {
                 </TableSortLabel>
               </TableCell>
               <TableCell>Type</TableCell>
+              <TableCell>Redirect Status</TableCell>
+              <TableCell>Upload</TableCell>
+              <TableCell>Delete</TableCell>
+              
             </TableRow>
           </TableHead>
           <TableBody>
@@ -174,6 +213,59 @@ const Domains = () => {
                 <TableRow hover key={domain._id} className="hover:bg-gray-100">
                   <TableCell>{domain.domain}</TableCell>
                   <TableCell>{domain.type}</TableCell>
+                  {domain.type === "button" ? (
+                    <TableCell>
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "8px",
+                        }}
+                      >
+                        <span
+                          style={{
+                            color: domain.templateActive ? "green" : "red",
+                            fontWeight: "bold",
+                          }}
+                        >
+                          {domain.templateActive ? "Active" : "Stopped"}
+                        </span>
+                        <button
+                          onClick={() => toggleRedirectStatus(domain._id)}
+                          style={{
+                            backgroundColor: domain.templateActive
+                              ? "#ff4d4d"
+                              : "#4caf50",
+                            color: "white",
+                            border: "none",
+                            borderRadius: "5px",
+                            padding: "5px 10px",
+                            cursor: "pointer",
+                          }}
+                        >
+                          {domain.templateActive ? "Turn Off" : "Turn On"}
+                        </button>
+                      </div>
+                    </TableCell>
+                  ) : (
+                    <TableCell />
+                  )}
+                  <TableCell>
+                  {domain.type==="template" && <DriveFolderUpload
+                      onClick={() => {
+                        setUploadMode(true);
+                        setSelectedDomain(domain._id);
+                      }}
+                      className=" hover:scale-125 duration-300 hover:text-red-500"
+                    />}
+                  </TableCell>
+
+                  <TableCell>
+                    <DeleteIcon
+                      onClick={() => handleDelete(domain._id)}
+                      className=" hover:scale-125 duration-300 hover:text-red-500"
+                    />
+                  </TableCell>
                 </TableRow>
               ))}
             {emptyRows > 0 && (
@@ -201,6 +293,17 @@ const Domains = () => {
           />
         </div>
       )}
+
+      {
+        uploadModel && (
+          <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center">
+            <DriveFolderUploadModel
+              selectedDomain={selectedDomain}
+              setUploadMode={setUploadMode}
+            />
+          </div>
+        )
+      }
     </div>
   );
 };
