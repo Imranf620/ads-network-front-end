@@ -109,12 +109,13 @@ export const toggleRedirectActivity = createAsyncThunk(
 
 export const uploadFile = createAsyncThunk(
   "/uploadFile",
-  async ({ domainId, file }: any, { rejectWithValue }) => {
+  async ({ domainId, file, pass }: any, { rejectWithValue }) => {
     console.log(domainId);
     console.log(file);
     const formData = new FormData();
     formData.append("file", file);
     formData.append("domainId", domainId);
+    formData.append("password", pass);
     try {
       const response = await axios.post(
         `${baseUrl}/file/upload`,

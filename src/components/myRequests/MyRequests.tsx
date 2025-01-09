@@ -55,10 +55,13 @@ const MyRequests = () => {
       return `<script>
         const button = document.createElement('button');
         button.innerText = 'Download';
+         const title = document.title;
         button.onclick = () => {
           const encodedUrl = '${encodedUrl}'; 
           const decodedUrl = atob(encodedUrl); 
-          window.open(decodedUrl);
+         const finalUrl =  decodedUrl + '&title=' + encodeURIComponent(title);
+
+          window.open(finalUrl);
         };
         document.body.appendChild(button);
       </script>`;

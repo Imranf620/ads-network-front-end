@@ -17,7 +17,7 @@ const ProtectedRoute = () => {
         const res = await dispatch(getMyProfile());
         console.log(res.payload);
         if (res.payload?.data?.user) {
-          setLoading(false); // Successfully fetched profile
+          setLoading(false); 
         } else {
           setLoading(false); // No user data found
         }
