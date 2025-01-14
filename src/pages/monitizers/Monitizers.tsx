@@ -22,16 +22,11 @@ import { toast } from "react-toastify";
 import MyRequests from "../../components/myRequests/MyRequests";
 
 const Monitizers = () => {
-  const [adType, setAdType] = useState("");
   const [details, setDetails] = useState("");
   const [openDialog, setOpenDialog] = useState(false);
 
   const dispatch = useAppDispatch();
-  const handleAdTypeChange = (event: SelectChangeEvent<string>) => {
-    setAdType(event.target.value);
-  };
 
- 
   const handleDetailsChange = (
     event: React.ChangeEvent<{ value: unknown }>
   ) => {
@@ -39,9 +34,7 @@ const Monitizers = () => {
   };
 
   const handleRequestSubmit = async () => {
-    const res = await dispatch(
-      requestForAds({ adType, domainDesc: details })
-    );
+    const res = await dispatch(requestForAds({ domainDesc: details }));
     if (res.payload.success) {
       toast.success(res.payload.message);
     } else {
@@ -97,24 +90,7 @@ const Monitizers = () => {
         <DialogContent>
           <Box component="form" noValidate autoComplete="off">
             <Grid container spacing={2}>
-              <Grid item xs={12}>
-                <FormControl fullWidth margin="normal">
-                  <InputLabel id="ad-type-label">Ad Type</InputLabel>
-                  <Select
-                    labelId="ad-type-label"
-                    id="ad-type"
-                    value={adType}
-                    onChange={handleAdTypeChange} 
-                    label="Ad Type"
-                    fullWidth
-                  >
-                    <MenuItem value="button-ad">Button Ad</MenuItem>
-                    <MenuItem value="popup-ad">Pop-up Ad</MenuItem>
-                    {/* Add other ad types if needed */}
-                  </Select>
-                </FormControl>
-              </Grid>
-
+          
 
               <Grid item xs={12}>
                 <TextField

@@ -19,7 +19,6 @@ const MyRequests = () => {
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [copySuccess, setCopySuccess] = useState(false);
- 
   const [embedCode, setEmbedCode] = useState("");
   const [openDialog, setOpenDialog] = useState(false);
 
@@ -29,11 +28,8 @@ const MyRequests = () => {
     const fetchRequests = async () => {
       try {
         const res = await dispatch(myRequestsForAd());
-        console.log(res.payload);
-
         if (res.payload.success) {
           setRequests(res.payload.data.allRequestsForAd);
-         
         }
       } catch (error) {
         console.error("Error fetching requests", error);
@@ -44,58 +40,78 @@ const MyRequests = () => {
     fetchRequests();
   }, [dispatch]);
 
-  // Function to generate the embed code
-  const generateEmbedCode = (domain: string, adType: string, CId:string) => {
-    console.log("user", CId)
-
+  // Generate embed codes for different ad types
+  const generateEmbedCode = (domain: string, adType: string, CId: string) => {
     const url = `${domain}?CID=${encodeURIComponent(CId)}`;
-    console.log("url", url)
     const encodedUrl = btoa(url);
-    if (adType === "button-ad") {
-      return `<script>
-        const button = document.createElement('button');
-        button.innerText = 'Download';
-         const title = document.title;
-        button.onclick = () => {
-          const encodedUrl = '${encodedUrl}'; 
-          const decodedUrl = atob(encodedUrl); 
-         const finalUrl =  decodedUrl + '&title=' + encodeURIComponent(title);
 
-          window.open(finalUrl);
-        };
-        document.body.appendChild(button);
+    if (adType === "popup") {
+      return `<script>
+        if (!sessionStorage.getItem('adShown')) {
+          const overlay = document.createElement('div');
+          overlay.style.position = 'fixed';
+          overlay.style.top = '0';
+          overlay.style.left = '0';
+          overlay.style.width = '100vw';
+          overlay.style.height = '100vh';
+          overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
+          overlay.style.zIndex = '9999';
+          overlay.style.cursor = 'pointer';
+          overlay.onclick = () => {
+            const decodedUrl = atob('${encodedUrl}');
+            window.location.href = decodedUrl;
+          };
+          document.body.appendChild(overlay);
+          sessionStorage.setItem('adShown', 'true');
+        }
       </script>`;
-    } else if (adType === "popup-ad") {
+    }
+
+    if (adType === "button") {
       return `<script>
         const button = document.createElement('button');
         button.innerText = 'Download';
+        button.style.padding = '10px 20px';
+        button.style.backgroundColor = '#007BFF';
+        button.style.color = '#fff';
+        button.style.border = 'none';
+        button.style.borderRadius = '5px';
+        button.style.cursor = 'pointer';
         button.onclick = () => {
-          const encodedUrl = '${encodedUrl}'; 
-          const decodedUrl = atob(encodedUrl); 
+          const decodedUrl = atob('${encodedUrl}');
           window.open(decodedUrl, '_blank');
         };
         document.body.appendChild(button);
       </script>`;
     }
-    return ""; // Return an empty string if no matching adType
+
+    if (adType === "smartLink") {
+      return `<script>
+        const link = document.createElement('a');
+        link.href = atob('${encodedUrl}');
+        link.innerText = 'Click here for an amazing offer!';
+        link.style.color = '#007BFF';
+        link.style.fontSize = '16px';
+        link.style.textDecoration = 'none';
+        document.body.appendChild(link);
+      </script>`;
+    }
+
+    return "";
   };
 
   const handleCopyEmbedCode = (embedCode: string) => {
     navigator.clipboard
       .writeText(embedCode)
-      .then(() => {
-        setCopySuccess(true); 
-      })
-      .catch((err) => {
-        console.error("Error copying text: ", err);
-      });
+      .then(() => setCopySuccess(true))
+      .catch((err) => console.error("Error copying text: ", err));
   };
 
-  const handleDialogOpen = (request: any) => {
+  const handleDialogOpen = (request: any, adType: string) => {
     const embedCode = generateEmbedCode(
       request.assignedDomain.domain,
-      request.adType,
-      request.CId,
+      adType,
+      request.CId
     );
     setEmbedCode(embedCode);
     setOpenDialog(true);
@@ -135,10 +151,6 @@ const MyRequests = () => {
                 <Typography variant="body1" className="text-gray-600 mb-1">
                   <strong>Description:</strong> {request.domainDesc}
                 </Typography>
-                {/* <Typography variant="body1" className="text-gray-600 mb-1">
-                  <strong>Client ID:</strong> {request.CId}
-                
-                </Typography> */}
                 <Typography variant="body1" className="text-gray-600 mb-1">
                   <strong>Requested At:</strong>{" "}
                   {new Date(request.requestForAdAt).toLocaleString()}
@@ -154,25 +166,26 @@ const MyRequests = () => {
                 </Typography>
 
                 {request.approved && request.assignedDomain && (
-                  <div className="mt-4">
-
-                    <Typography>
-                      Total Cicks:
-                    {request.totalClicks}
-
-                    </Typography>
-                  </div>
-                )}
-
-                {/* Show "Copy Embed Code" button if the request is approved */}
-                {request.approved && request.assignedDomain && (
-                  <div className="mt-4">
+                  <div className="mt-4 space-x-2">
                     <Button
                       variant="contained"
                       color="primary"
-                      onClick={() => handleDialogOpen(request)}
+                      onClick={() => handleDialogOpen(request, "popup")}
                     >
-                      Copy Embed Code
+                      Popup Ad
+                    </Button>
+                    <Button
+                      variant="contained"
+                      color="secondary"
+                      onClick={() => handleDialogOpen(request, "button")}
+                    >
+                      Button Ad
+                    </Button>
+                    <Button
+                      variant="contained"
+                      onClick={() => handleDialogOpen(request, "smartLink")}
+                    >
+                      Smart Link Ad
                     </Button>
                   </div>
                 )}
@@ -186,7 +199,7 @@ const MyRequests = () => {
         </div>
       )}
 
-      {/* Snackbar to show success message */}
+      {/* Snackbar */}
       <Snackbar
         open={copySuccess}
         autoHideDuration={3000}
@@ -194,8 +207,8 @@ const MyRequests = () => {
         message="Embed code copied to clipboard!"
       />
 
-      {/* Dialog for Embed Code */}
-      <Dialog open={openDialog} fullWidth   onClose={handleDialogClose}>
+      {/* Dialog */}
+      <Dialog open={openDialog} fullWidth onClose={handleDialogClose}>
         <DialogTitle>Embed Code</DialogTitle>
         <DialogContent>
           <TextField
