@@ -26,6 +26,8 @@ const DriveFolderUploadModel: React.FC<Component> = ({
   const [loading, setLoading] = useState(false);
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [fileUrl, setFileUrl] = useState("");
+  const [urlUpload, setUrlUpload] = useState(false);
 
   const dispatch = useAppDispatch();
 
@@ -38,20 +40,22 @@ const DriveFolderUploadModel: React.FC<Component> = ({
   };
 
   const uploadData = async () => {
-    if (!file) {
-      toast.error("Please select a file to upload");
+    console.log("fileUrl",fileUrl);
+    console.log(fileUrl.length)
+    if (!file && !urlUpload) {
+      toast.error("Please select a file or enter a url to upload");
       return;
     }
 
-    let pass = undefined ;
-    if(password.length>1){
-     pass = password;
+    let pass = undefined;
+    if (password.length > 1) {
+      pass = password;
     }
     setLoading(true);
 
     try {
       const res = await dispatch(
-        uploadFile({ domainId: selectedDomain, file , pass})
+        uploadFile({ domainId: selectedDomain, file, pass ,fileUrl})
       );
 
       if (res.payload.success) {
@@ -87,16 +91,58 @@ const DriveFolderUploadModel: React.FC<Component> = ({
           boxShadow: 3,
         }}
       >
+     
+     <div style={{ display: "flex", gap: "8px" }}>
+      <Button
+        sx={{
+          flex: 1,
+          backgroundColor: !urlUpload ? "#3b82f6" : "#e5e7eb", // Tailwind blue-500 & gray-200
+          color: !urlUpload ? "#ffffff" : "#000000",
+          "&:hover": {
+            backgroundColor: !urlUpload ? "#2563eb" : "#d1d5db", // Tailwind blue-600 & gray-300
+          },
+        }}
+        onClick={() => setUrlUpload(false)}
+      >
+        File
+      </Button>
+      <Button
+        sx={{
+          flex: 1,
+          backgroundColor: urlUpload ? "#3b82f6" : "#e5e7eb",
+          color: urlUpload ? "#ffffff" : "#000000",
+          "&:hover": {
+            backgroundColor: urlUpload ? "#2563eb" : "#d1d5db",
+          },
+        }}
+        onClick={() => setUrlUpload(true)}
+      >
+        URL
+      </Button>
+    </div>
         <Typography variant="h6" sx={{ marginBottom: 2 }}>
           Upload to Domain: {selectedDomain}
         </Typography>
-        <TextField
-          type="file"
-          onChange={selectFile}
-          fullWidth
-          variant="outlined"
-          sx={{ marginBottom: 2 }}
-        />
+        {!urlUpload ? (
+          <TextField
+            type="file"
+            onChange={selectFile}
+            fullWidth
+            variant="outlined"
+            sx={{ marginBottom: 2 }}
+          />
+        ) : (
+          <TextField
+            type="url"
+            label="URL"
+            value={fileUrl}
+            onChange={(e) => setFileUrl(e.target.value)}
+            sx={{
+              width: "100%",
+              marginBottom: 2,
+            }}
+          />
+        )}
         <div className=" relative  mb-4">
           <TextField
             type={showPassword ? "text" : "password"}
@@ -104,11 +150,14 @@ const DriveFolderUploadModel: React.FC<Component> = ({
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             sx={{
-              width:"100%",
+              width: "100%",
             }}
           />
 
-          <Visibility onClick={()=>setShowPassword(!showPassword)} className="absolute  right-7 top-1/2 -translate-y-1/2" />
+          <Visibility
+            onClick={() => setShowPassword(!showPassword)}
+            className="absolute  right-7 top-1/2 -translate-y-1/2"
+          />
         </div>
         {fileName && (
           <Typography variant="body2" sx={{ marginBottom: 2 }}>
@@ -127,7 +176,7 @@ const DriveFolderUploadModel: React.FC<Component> = ({
               },
               width: "48%",
             }}
-            disabled={loading || !file}
+            disabled={loading || (!file && !urlUpload)}
           >
             {loading ? (
               <>
