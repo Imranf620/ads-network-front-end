@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import  { useEffect, useState } from "react";
 import { useAppDispatch } from "../../hooks/useAppDispatch";
 import { getAllDomains } from "../../features/domainsSlice";
 import { CircularProgress } from "@mui/material";

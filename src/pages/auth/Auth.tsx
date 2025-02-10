@@ -14,7 +14,6 @@ const AuthPage = () => {
   const [confirmPassword, setConfirmPassword] = useState<string>("");
   const [role, setRole] = useState<string>("");
   const [error, setError] = useState<string>("");
-  const [loading, setLoading] = useState(false);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 

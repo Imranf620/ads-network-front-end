@@ -3,7 +3,7 @@ import { useAppDispatch } from "../../hooks/useAppDispatch";
 import { createDomain } from "../../features/domainsSlice";
 import { toast } from "react-toastify";
 
-const CreateDomainModel = ({ setShowCreateDomainModel, addDomain }: any) => {
+const CreateDomainModel = ({ setShowCreateDomainModel }: any) => {
   const dispatch = useAppDispatch();
   const [newdomain, setnewdomain] = useState({
     domain: "",

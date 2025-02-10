@@ -1,7 +1,7 @@
-import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
-const baseUrl = "http://localhost:4000/api/v1";
+const baseUrl =  process.env.REACT_APP_API_URL
 
 interface DomainState {
   allDomains: any[];
@@ -110,8 +110,7 @@ export const toggleRedirectActivity = createAsyncThunk(
 export const uploadFile = createAsyncThunk(
   "/uploadFile",
   async ({ domainId, file, pass, fileUrl }: any, { rejectWithValue }) => {
-    console.log(domainId);
-    console.log(file);
+
     const formData = new FormData();
     formData.append("file", file);
     formData.append("domainId", domainId);

@@ -59,9 +59,10 @@ const Users = () => {
     setFilter(event.target.value);
   };
 
-  const handleChangePage = (event: unknown, newPage: number) => {
+  const handleChangePage = (_event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
     setPage(newPage);
   };
+  
 
   const handleChangeRowsPerPage = (
     event: React.ChangeEvent<HTMLInputElement>

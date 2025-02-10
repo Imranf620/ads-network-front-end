@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { getMyProfile } from "../features/userSlice";
 import { useAppDispatch } from "../hooks/useAppDispatch";
 
@@ -9,7 +9,7 @@ import { CircularProgress } from "@mui/material";
 const ProtectedRoute = () => {
   const [loading, setLoading] = useState(true);
   const dispatch = useAppDispatch();
-  const { user, isAuthenticated } = useAppSelector((state) => state.auth);
+  const {  isAuthenticated } = useAppSelector((state) => state.auth);
 
   useEffect(() => {
     const fetchMyProfile = async () => {
