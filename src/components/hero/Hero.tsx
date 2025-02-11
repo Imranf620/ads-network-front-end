@@ -1,4 +1,5 @@
 import { Button, Container, Typography } from "@mui/material";
+import { Link } from "react-router-dom";
 
 const Hero = () => {
   return (
@@ -12,12 +13,17 @@ const Hero = () => {
             Join our powerful ad network and start earning with high CPM rates and AI-driven ad placements.
           </Typography>
           <div className="mt-6 flex gap-4">
+            <Link to="/auth">
             <Button variant="contained" color="primary" size="large">
               Get Started
             </Button>
+            </Link>
+            <Link to="/auth">
+
             <Button variant="outlined" color="inherit" size="large">
               Learn More
             </Button>
+            </Link>
           </div>
         </div>
       </Container>
