@@ -22,6 +22,7 @@ const Navbar = ({ user }: any) => {
       navigate("/auth");
     }
   };
+  
 
   return (
     <nav className="bg-gradient-to-r from-blue-500 to-blue-700 p-4 shadow-lg">
@@ -38,6 +39,14 @@ const Navbar = ({ user }: any) => {
               Domains
             </Link>
           )}
+          {!user && (
+            <Link
+              to="/auth"
+              className="text-white hover:text-blue-300 transition-all duration-200"
+            >
+              Sign In
+            </Link>
+           )}
           <Link
             to="/stats"
             className="text-white hover:text-blue-300 transition-all duration-200"

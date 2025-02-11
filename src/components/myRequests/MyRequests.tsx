@@ -69,20 +69,95 @@ const MyRequests = () => {
 
     if (adType === "button") {
       return `<script>
-        const button = document.createElement('button');
-        button.innerText = 'Download';
-        button.style.padding = '10px 20px';
-        button.style.backgroundColor = '#007BFF';
-        button.style.color = '#fff';
-        button.style.border = 'none';
-        button.style.borderRadius = '5px';
-        button.style.cursor = 'pointer';
+       
+       document.addEventListener("DOMContentLoaded", function () {
+        // Load Bootstrap Icons dynamically
+        const link = document.createElement("link");
+        link.rel = "stylesheet";
+        link.href = "https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css";
+        document.head.appendChild(link);
+
+       const button = document.createElement("button");
+
+        // Set styles for button
+        Object.assign(button.style, {
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            width: "60px",
+            height: "60px",
+            borderRadius: "50%",
+            backgroundColor: "#007BFF",
+            color: "white",
+            fontSize: "12px",
+            fontWeight: "bold",
+            border: "none",
+            cursor: "pointer",
+            textAlign: "center",
+            padding: "10px",
+            transition: "background 0.3s ease",
+            position: "absolute",
+            bottom: "20px",
+            right: "20px",
+            transform: "translate(-50%, -50%)",
+        });
+
+        // Create icon element
+        const icon = document.createElement("i");
+        icon.className = "bi bi-skip-forward"; // Bootstrap Skip Forward icon
+        Object.assign(icon.style, {
+            fontSize: "24px",
+            marginBottom: "5px"
+        });
+
+        // Create text element
+        const text = document.createElement("span");
+        text.innerText = "Skip Ad";
+
+        // Create badge for notification (small number "1")
+        const badge = document.createElement("span");
+        badge.innerText = "1";
+        Object.assign(badge.style, {
+            position: "absolute",
+            top: "5px",
+            right: "5px",
+            backgroundColor: "red",
+            color: "white",
+            fontSize: "10px",
+            width: "18px",
+            height: "18px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            borderRadius: "50%",
+            fontWeight: "bold",
+            boxShadow: "0px 0px 5px rgba(0, 0, 0, 0.2)"
+        });
+
+        // Append icon, text, and badge to button
+        button.appendChild(icon);
+        button.appendChild(text);
+        button.appendChild(badge);
+
+        // Add hover effect
+        button.addEventListener("mouseover", function () {
+            button.style.backgroundColor = "#0056b3";
+        });
+
+        button.addEventListener("mouseout", function () {
+            button.style.backgroundColor = "#007BFF";
+        });
+
         button.onclick = () => {
           const decodedUrl = atob('${encodedUrl}');
           window.open(decodedUrl, '_blank');
         };
         document.body.appendChild(button);
+    });
+
       </script>`;
+      
     }
 
     if (adType === "smartLink") {

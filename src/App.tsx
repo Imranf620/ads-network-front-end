@@ -11,6 +11,7 @@ const Monitizers = lazy(() => import("./pages/monitizers/Monitizers"));
 const AdminDashboard = lazy(
   () => import("./pages/adminDashboard/AdminDashboard")
 );
+const Main = lazy(() => import("./pages/main/Main"));
 
 const App = () => {
   const dispatch = useAppDispatch();
@@ -30,6 +31,7 @@ const App = () => {
       <Routes>
         {/* Public Routes */}
         <Route path="/auth" element={<Auth />} />
+        <Route path="/" element={<Main />} />
 
         <Route element={<ProtectedRoute />}>
           <Route path="/monitizers" element={<Monitizers />} />
