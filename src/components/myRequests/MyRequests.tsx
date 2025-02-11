@@ -30,6 +30,7 @@ const MyRequests = () => {
         const res = await dispatch(myRequestsForAd());
         if (res.payload.success) {
           setRequests(res.payload.data.allRequestsForAd);
+          console.log(res.payload.data.allRequestsForAd);
         }
       } catch (error) {
         console.error("Error fetching requests", error);
@@ -71,7 +72,7 @@ const MyRequests = () => {
       return `<script>
        
        document.addEventListener("DOMContentLoaded", function () {
-        // Load Bootstrap Icons dynamically
+       
         const link = document.createElement("link");
         link.rel = "stylesheet";
         link.href = "https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css";
@@ -79,7 +80,6 @@ const MyRequests = () => {
 
        const button = document.createElement("button");
 
-        // Set styles for button
         Object.assign(button.style, {
             display: "flex",
             flexDirection: "column",
@@ -103,19 +103,16 @@ const MyRequests = () => {
             transform: "translate(-50%, -50%)",
         });
 
-        // Create icon element
         const icon = document.createElement("i");
-        icon.className = "bi bi-skip-forward"; // Bootstrap Skip Forward icon
+        icon.className = "bi bi-skip-forward"; 
         Object.assign(icon.style, {
             fontSize: "24px",
             marginBottom: "5px"
         });
 
-        // Create text element
         const text = document.createElement("span");
         text.innerText = "Skip Ad";
 
-        // Create badge for notification (small number "1")
         const badge = document.createElement("span");
         badge.innerText = "1";
         Object.assign(badge.style, {
@@ -135,12 +132,10 @@ const MyRequests = () => {
             boxShadow: "0px 0px 5px rgba(0, 0, 0, 0.2)"
         });
 
-        // Append icon, text, and badge to button
         button.appendChild(icon);
         button.appendChild(text);
         button.appendChild(badge);
 
-        // Add hover effect
         button.addEventListener("mouseover", function () {
             button.style.backgroundColor = "#0056b3";
         });
@@ -240,7 +235,14 @@ const MyRequests = () => {
                   {request.approved ? "Approved" : "Pending"}
                 </Typography>
 
+                
+
                 {request.approved && request.assignedDomain && (
+                  <>
+                  <Typography>
+                    Total Clicks :
+                    {request?.totalClicks}
+                  </Typography>
                   <div className="mt-4 space-x-2">
                     <Button
                       variant="contained"
@@ -262,7 +264,9 @@ const MyRequests = () => {
                     >
                       Smart Link Ad
                     </Button>
+
                   </div>
+                  </>
                 )}
               </CardContent>
             </Card>

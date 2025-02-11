@@ -1,5 +1,5 @@
 import { lazy, useEffect, useState } from "react";
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useLocation } from "react-router-dom";
 import { useAppDispatch } from "./hooks/useAppDispatch";
 import { getMyProfile } from "./features/userSlice";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -12,10 +12,12 @@ const AdminDashboard = lazy(
   () => import("./pages/adminDashboard/AdminDashboard")
 );
 const Main = lazy(() => import("./pages/main/Main"));
+const NotFound = lazy(() => import("./pages/notFound/NotFound"));
 
 const App = () => {
   const dispatch = useAppDispatch();
   const [user, setUser] = useState(null);
+  const location = useLocation()
 
   useEffect(() => {
     const fetchMyProfile = async () => {
@@ -23,7 +25,7 @@ const App = () => {
       setUser(res.payload.data);
     };
     fetchMyProfile();
-  }, [dispatch]);
+  }, [dispatch, location]);
 
   return (
     <>
@@ -40,6 +42,8 @@ const App = () => {
             <Route path="/admin/dashboard" element={<AdminDashboard />} />
           </Route>
         </Route>
+        <Route path="*" element={<NotFound />} />
+
       </Routes>
     </>
   );

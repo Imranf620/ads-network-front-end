@@ -19,7 +19,7 @@ const Navbar = ({ user }: any) => {
     const res = await dispatch(logoutUser());
     if (res.payload.success) {
       toast.success(res.payload.message);
-      navigate("/auth");
+      navigate("/");
     }
   };
   
@@ -47,12 +47,12 @@ const Navbar = ({ user }: any) => {
               Sign In
             </Link>
            )}
-          <Link
+          {/* <Link
             to="/stats"
             className="text-white hover:text-blue-300 transition-all duration-200"
           >
             Stats
-          </Link>
+          </Link> */}
           {user?.role==="advertiser" && <Link
             to="/advertisers"
             className="text-white hover:text-blue-300 text-lg transition-all duration-200"
@@ -115,12 +115,12 @@ const Navbar = ({ user }: any) => {
               Domains
             </Link>
           )}
-          <Link
+          {/* <Link
             to="/stats"
             className="text-white hover:text-blue-300 text-lg transition-all duration-200"
           >
             Stats
-          </Link>
+          </Link> */}
           {user?.role==="advertiser" && <Link
             to="/advertisers"
             className="text-white hover:text-blue-300 text-lg transition-all duration-200"

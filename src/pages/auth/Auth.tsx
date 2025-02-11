@@ -13,6 +13,7 @@ const AuthPage = () => {
   const [password, setPassword] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState<string>("");
   const [role, setRole] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -23,11 +24,17 @@ const AuthPage = () => {
 
   const handleLoginSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
     const res = await dispatch(loginUser({ email, password }));
-    console.log(res);
+    setLoading(false);
     if (res.payload.success === true) {
       toast.success("Login Successful");
-      navigate("/dashboard");
+      if(res.payload.user.role==="admin"){
+
+        navigate("/admin/dashboard");
+      }else{
+        navigate("/monitizers");
+      }
     } else {
       toast.error(res.payload);
     }
@@ -43,9 +50,12 @@ const AuthPage = () => {
       setError("Please select a social media platform and enter a user ID");
       return;
     }
+    setLoading(true);
+
     const res = await dispatch(
       regsiter({ email, password, accountId , name, accountType, role})
     );
+    setLoading(false);
     if (res.payload.success === true) {
       toast.success("Registration Successful");
       navigate("/dashboard");
@@ -128,7 +138,7 @@ const AuthPage = () => {
                 >
                   <option value="">Select Account Type</option>
                   <option value="monetizer">Monetizer</option>
-                  <option value="advertiser">Advertiser</option>
+                  {/* <option value="advertiser">Advertiser</option> */}
                
                 </select>
               </div>
@@ -167,7 +177,7 @@ const AuthPage = () => {
             type="submit"
             className="w-full bg-blue-500 text-white py-2 rounded-md mt-4 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
-            {isLogin ? "Login" : "Sign Up"}
+              {loading ? "Processing..." : isLogin ? "Login" : "Sign Up"}
           </button>
         </form>
         <button
