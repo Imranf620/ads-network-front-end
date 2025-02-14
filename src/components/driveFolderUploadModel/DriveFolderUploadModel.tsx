@@ -201,6 +201,8 @@ const DriveFolderUploadModel: React.FC<Component> = ({
             sx={{ width: "100%", marginBottom: 2 }}
           />
         )}
+        <form>
+
         <Box sx={{ position: "relative", marginBottom: 2 }}>
           <TextField
             type={showPassword ? "text" : "password"}
@@ -221,6 +223,8 @@ const DriveFolderUploadModel: React.FC<Component> = ({
             {showPassword ? <VisibilityOff /> : <Visibility />}
           </IconButton>
         </Box>
+        </form>
+
         {fileName && (
           <Typography variant="body2" sx={{ marginBottom: 2 }}>
             Selected File: {fileName}
