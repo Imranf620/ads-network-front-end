@@ -56,6 +56,7 @@ const Domains = () => {
         const resultAction = await dispatch(getAllDomains());
         if (getAllDomains.fulfilled.match(resultAction)) {
           setAllDomains(resultAction.payload.data);
+          console.log(resultAction.payload.data);
         } else {
           setError(resultAction.error.message || "Failed to fetch domains");
         }

@@ -114,6 +114,22 @@ export const approveAdsRequest = createAsyncThunk("/approveAds", async(data: any
   }
 })
 
+export const getStats = createAsyncThunk("/approveAds", async({domainId, startDate, endDate}: any,{rejectWithValue})=>{
+  try {
+  
+    const response = await axios.get(`${baseUrl}/user/stats`, {
+      params:{
+        domainId, startDate, endDate
+      },
+      withCredentials: true,
+    });
+    return response.data;
+  } catch (error: any) {
+    console.error(error)
+    return rejectWithValue(error.response?.data?.message || error.message);
+  }
+})
+
 
 interface UserState {
   user: Record<string, any> | null;

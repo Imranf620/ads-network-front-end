@@ -1,16 +1,20 @@
-import { Button, Typography, Box } from '@mui/material';
-import React, { useEffect, useState } from 'react';
-import AllBtnDomains from '../allBtnDomains/AllBtnDomains';
+import { Button, Typography, Box } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import AllBtnDomains from "../allBtnDomains/AllBtnDomains";
 
 interface UserRequestProps {
   actionRequest: any;
   setActionRequestModel: React.Dispatch<React.SetStateAction<boolean>>;
-  userId:string
+  userId: string;
 }
 
-const UserRequest: React.FC<UserRequestProps> = ({ actionRequest, setActionRequestModel, userId }) => {
+const UserRequest: React.FC<UserRequestProps> = ({
+  actionRequest,
+  setActionRequestModel,
+  userId,
+}) => {
   const [isDomainModalOpen, setIsDomainModalOpen] = useState(false);
- 
+
   const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === e.currentTarget) {
       setActionRequestModel(false);
@@ -19,14 +23,14 @@ const UserRequest: React.FC<UserRequestProps> = ({ actionRequest, setActionReque
 
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
+      if (e.key === "Escape") {
         setActionRequestModel(false);
       }
     };
-    window.addEventListener('keydown', handleEsc);
+    window.addEventListener("keydown", handleEsc);
 
     return () => {
-      window.removeEventListener('keydown', handleEsc);
+      window.removeEventListener("keydown", handleEsc);
     };
   }, [setActionRequestModel]);
 
@@ -40,72 +44,105 @@ const UserRequest: React.FC<UserRequestProps> = ({ actionRequest, setActionReque
     setIsDomainModalOpen(false); // Close the domain modal
   };
 
+
   return (
     <Box
       sx={{
-        position: 'fixed',
+        position: "fixed",
         top: 0,
         left: 0,
         right: 0,
         bottom: 0,
-        bgcolor: 'rgba(0, 0, 0, 0.5)', 
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
+        bgcolor: "rgba(0, 0, 0, 0.5)",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
       }}
       onClick={handleBackdropClick}
     >
       <Box
         sx={{
           width: 400,
-          bgcolor: 'white',
+          bgcolor: "white",
           borderRadius: 2,
           boxShadow: 3,
           padding: 3,
-          display: 'flex',
-          flexDirection: 'column',
-          textAlign: 'left',  // Align text to the left
+          display: "flex",
+          flexDirection: "column",
+          textAlign: "left", // Align text to the left
         }}
       >
-        <Typography variant="h6" gutterBottom sx={{ fontWeight: 'bold' }}>
+        <Typography variant="h6" gutterBottom sx={{ fontWeight: "bold" }}>
           Request Details
         </Typography>
 
         <Box sx={{ marginBottom: 2 }}>
-          <Typography variant="body1" color="textSecondary" sx={{ marginBottom: 1 }}>
-            <strong>Domain:</strong> {actionRequest.domain}
-          </Typography>
-          <Typography variant="body1" color="textSecondary" sx={{ marginBottom: 1 }}>
+          {actionRequest.approved && (
+            <>
+            <Typography
+              variant="body1"
+              color="textSecondary"
+              sx={{ marginBottom: 1 }}
+            >
+              <strong>Assigned Domain:</strong>{" "}
+              {actionRequest?.assignedDomain?.domain}
+            </Typography>
+
+            <Typography
+              variant="body1"
+              color="textSecondary"
+              sx={{ marginBottom: 1 }}
+            >
+              <strong>Total Clicks:</strong>{" "}
+              {actionRequest?.totalClicks}{" "}
+            </Typography>
+            </>
+          )}
+
+          <Typography
+            variant="body1"
+            color="textSecondary"
+            sx={{ marginBottom: 1 }}
+          >
             <strong>Description:</strong>
             <Typography
               variant="body2"
               color="textSecondary"
               sx={{
                 marginTop: 0.5,
-                whiteSpace: 'pre-line', // Ensure long descriptions are properly wrapped
+                whiteSpace: "pre-line", // Ensure long descriptions are properly wrapped
               }}
             >
               {actionRequest.domainDesc}
             </Typography>
           </Typography>
-          <Typography variant="body1" color="textSecondary" sx={{ marginBottom: 1 }}>
-            <strong>Requested At:</strong>  {new Date(actionRequest.requestForAdAt).toLocaleString()}
+          <Typography
+            variant="body1"
+            color="textSecondary"
+            sx={{ marginBottom: 1 }}
+          >
+            <strong>Requested At:</strong>{" "}
+            {new Date(actionRequest.requestForAdAt).toLocaleString()}
           </Typography>
         </Box>
 
         <Box sx={{ marginBottom: 2 }}>
-          <Typography variant="body1" color={actionRequest.approved ? 'success.main' : 'error.main'}>
-            <strong>Status:</strong> {actionRequest.approved ? 'Approved' : 'Not Approved'}
+          <Typography
+            variant="body1"
+            color={actionRequest.approved ? "success.main" : "error.main"}
+          >
+            <strong>Status:</strong>{" "}
+            {actionRequest.approved ? "Approved" : "Not Approved"}
           </Typography>
         </Box>
 
-        <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+        <Box sx={{ display: "flex", justifyContent: "space-between" }}>
           <Button
             variant="contained"
-            color={actionRequest.approved ? 'secondary' : 'primary'}
+            color={actionRequest.approved ? "secondary" : "primary"}
             onClick={handleAssignClick} // Open domain modal when clicked
           >
-            {actionRequest.approved ? 'Disconnect' : 'Assign'}
+            {actionRequest.approved ? "Disconnect" : "Assign"}
           </Button>
           <Button
             variant="outlined"
@@ -119,7 +156,7 @@ const UserRequest: React.FC<UserRequestProps> = ({ actionRequest, setActionReque
       {isDomainModalOpen && (
         <AllBtnDomains
           closeModal={handleDomainModalClose}
-          requestId={actionRequest._id} 
+          requestId={actionRequest._id}
           userId={userId}
         />
       )}
