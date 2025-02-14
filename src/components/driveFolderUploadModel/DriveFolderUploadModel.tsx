@@ -14,7 +14,7 @@ import {
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import axios from "axios";
 
-console.log("hello");
+console.error("hello");
 
 interface Component {
   selectedDomain: string;
@@ -39,8 +39,8 @@ const DriveFolderUploadModel: React.FC<Component> = ({
 
   const dispatch = useAppDispatch();
 
-  console.log("import.meta.env.VITE_API_URL", import.meta.env.VITE_API_URL);
-  console.log("apiBaseUrl", apiBaseUrl);
+  console.error("import.meta.env.VITE_API_URL", import.meta.env.VITE_API_URL);
+  console.error("apiBaseUrl", apiBaseUrl);
 
   const selectFile = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files ? e.target.files[0] : null;
@@ -48,14 +48,14 @@ const DriveFolderUploadModel: React.FC<Component> = ({
       setFile(selectedFile);
       setFileName(selectedFile.name);
     }
-    console.log("apibase", apiBaseUrl);
+    console.error("apibase", apiBaseUrl);
   };
 
   const uploadData = async () => {
     let uploadedViaS3 = false;
     let fileName = file?.name || "";
     let url = fileUrl;
-    console.log("apibase", apiBaseUrl);
+    console.error("apibase", apiBaseUrl);
 
     setLoading(true);
 
@@ -72,7 +72,7 @@ const DriveFolderUploadModel: React.FC<Component> = ({
             },
           }
         );
-        console.log("delete and check", res);
+        console.error("delete and check", res);
 
         const preSignedResponse = await axios.post(
           `${apiBaseUrl}/file/get-preassignedulr`,
@@ -84,14 +84,14 @@ const DriveFolderUploadModel: React.FC<Component> = ({
             },
           }
         );
-        console.log("pre signed url", preSignedResponse);
+        console.error("pre signed url", preSignedResponse);
 
         url = preSignedResponse.data.url;
 
         const uploadedRes = await axios.put(url, file, {
           headers: { "Content-Type": file.type },
         });
-        console.log("uploaded via s3", uploadedRes);
+        console.error("uploaded via s3", uploadedRes);
         uploadedViaS3 = true;
       } catch (error) {
         console.error("Error during file upload process:", error);
@@ -114,7 +114,7 @@ const DriveFolderUploadModel: React.FC<Component> = ({
           fileUrl: uploadedViaS3 ? undefined : url, // Only send URL if user manually enters one
         })
       );
-      console.log("uploadFile", res);
+      console.error("uploadFile", res);
 
       if (res?.payload?.success) {
         toast.success(res?.payload?.message);
