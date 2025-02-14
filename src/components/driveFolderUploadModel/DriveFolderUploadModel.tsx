@@ -34,6 +34,7 @@ const DriveFolderUploadModel: React.FC<Component> = ({
   const apiBaseUrl = import.meta.env.VITE_API_URL.endsWith("/")
   ? import.meta.env.VITE_API_URL.slice(0, -1)
   : import.meta.env.VITE_API_URL;
+  console.log("apibase", apiBaseUrl)
 
   const dispatch = useAppDispatch();
 
