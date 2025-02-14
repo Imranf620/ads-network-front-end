@@ -14,6 +14,8 @@ import {
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import axios from "axios";
 
+console.log("hello");
+
 interface Component {
   selectedDomain: string;
   setUploadMode: React.Dispatch<React.SetStateAction<boolean>>;
@@ -36,7 +38,6 @@ const DriveFolderUploadModel: React.FC<Component> = ({
     : import.meta.env.VITE_API_URL;
 
   const dispatch = useAppDispatch();
-  console.log("hello");
 
   console.log("import.meta.env.VITE_API_URL", import.meta.env.VITE_API_URL);
   console.log("apiBaseUrl", apiBaseUrl);
