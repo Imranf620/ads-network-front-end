@@ -19,7 +19,6 @@ import {
   CircularProgress,
 } from "@mui/material";
 import UserRequest from "../userRequest/UserRequest";
-import Stats from "../stats/Stats";
 
 const Users = () => {
   const [users, setUsers] = useState<any[]>([]);
