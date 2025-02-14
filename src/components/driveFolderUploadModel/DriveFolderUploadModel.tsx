@@ -34,7 +34,6 @@ const DriveFolderUploadModel: React.FC<Component> = ({
   const apiBaseUrl = import.meta.env.VITE_API_URL.endsWith("/")
     ? import.meta.env.VITE_API_URL.slice(0, -1)
     : import.meta.env.VITE_API_URL;
-  console.log("apibase", apiBaseUrl);
 
   const dispatch = useAppDispatch();
 
@@ -44,12 +43,15 @@ const DriveFolderUploadModel: React.FC<Component> = ({
       setFile(selectedFile);
       setFileName(selectedFile.name);
     }
+  console.log("apibase", apiBaseUrl);
+
   };
 
   const uploadData = async () => {
     let uploadedViaS3 = false;
     let fileName = file?.name || "";
     let url = fileUrl;
+    console.log("apibase", apiBaseUrl);
 
     setLoading(true);
 
