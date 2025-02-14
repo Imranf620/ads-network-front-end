@@ -1,6 +1,7 @@
 import  { useState } from 'react';
 import Domains from '../domains/Domains';
 import Users from '../../components/users/Users';
+import Stats from '../../components/stats/Stats';
 
 const AdminDashboard = () => {
   const [toShow, setToShow] = useState("domains");
@@ -22,14 +23,23 @@ const AdminDashboard = () => {
         >
           Users
         </button>
+        <button
+          onClick={() => setToShow("stats")}
+          className={`px-4 py-2 rounded-md text-lg font-semibold transition-all duration-300 
+            ${toShow === "stats"? "bg-blue-600 text-white" : "bg-white text-blue-600 border-2 border-blue-600 hover:bg-blue-100"}`}
+        >Stats</button>
       </div>
 
       <div className="bg-white p-6 rounded-lg shadow-lg">
         {toShow === "domains" ? (
           <Domains />
-        ) : (
+        ) : toShow==="users"? (
           <Users />
-        )}
+        )
+        : (
+          <Stats/>
+        )
+      }
       </div>
     </div>
   );
