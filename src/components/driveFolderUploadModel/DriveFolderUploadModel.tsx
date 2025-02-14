@@ -32,9 +32,9 @@ const DriveFolderUploadModel: React.FC<Component> = ({
   const [urlUpload, setUrlUpload] = useState(false);
 
   const apiBaseUrl = import.meta.env.VITE_API_URL.endsWith("/")
-  ? import.meta.env.VITE_API_URL.slice(0, -1)
-  : import.meta.env.VITE_API_URL;
-  console.log("apibase", apiBaseUrl)
+    ? import.meta.env.VITE_API_URL.slice(0, -1)
+    : import.meta.env.VITE_API_URL;
+  console.log("apibase", apiBaseUrl);
 
   const dispatch = useAppDispatch();
 
@@ -46,36 +46,45 @@ const DriveFolderUploadModel: React.FC<Component> = ({
     }
   };
 
-
   const uploadData = async () => {
     let uploadedViaS3 = false;
     let fileName = file?.name || "";
     let url = fileUrl;
-  
+
     setLoading(true);
 
     if (!urlUpload && file) {
       try {
-        
         // Check and delete existing file if necessary
-       const res =  await axios.post(
-          `${apiBaseUrl}/file/check-and-delete`, 
-          { domainId: selectedDomain, fileName }, 
-          { withCredentials: true }
+        const res = await axios.post(
+          `${apiBaseUrl}/file/check-and-delete`,
+          { domainId: selectedDomain, fileName },
+          {
+            withCredentials: true,
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
         );
-        console.log("delete and check", res)
-  
+        console.log("delete and check", res);
+
         const preSignedResponse = await axios.post(
           `${apiBaseUrl}/file/get-preassignedulr`,
           { filename: fileName, fileType: file.type },
-          { withCredentials: true }
+          { withCredentials: true,
+            headers: {
+              "Content-Type": "application/json",
+            },
+           }
         );
-        console.log("pre signed url", preSignedResponse)
-  
+        console.log("pre signed url", preSignedResponse);
+
         url = preSignedResponse.data.url;
-  
-       const uploadedRes =  await axios.put(url, file, { headers: { "Content-Type": file.type } });
-        console.log("uploaded via s3", uploadedRes)
+
+        const uploadedRes = await axios.put(url, file, {
+          headers: { "Content-Type": file.type },
+        });
+        console.log("uploaded via s3", uploadedRes);
         uploadedViaS3 = true;
       } catch (error) {
         console.error("Error during file upload process:", error);
@@ -83,13 +92,12 @@ const DriveFolderUploadModel: React.FC<Component> = ({
         return;
       }
     }
-  
+
     if ((!file && !urlUpload) || (urlUpload && !fileUrl)) {
       toast.error("Please select a file or enter a URL to upload");
       return;
     }
-  
-  
+
     try {
       const res = await dispatch(
         uploadFile({
@@ -99,9 +107,8 @@ const DriveFolderUploadModel: React.FC<Component> = ({
           fileUrl: uploadedViaS3 ? undefined : url, // Only send URL if user manually enters one
         })
       );
-      console.log("uploadFile", res)
-  
-  
+      console.log("uploadFile", res);
+
       if (res?.payload?.success) {
         toast.success(res?.payload?.message);
         setUploadMode(false);
@@ -115,7 +122,6 @@ const DriveFolderUploadModel: React.FC<Component> = ({
       setLoading(false);
     }
   };
-  
 
   const handleClose = () => {
     setUploadMode(false);
@@ -222,11 +228,14 @@ const DriveFolderUploadModel: React.FC<Component> = ({
               },
               width: "48%",
             }}
-            disabled={loading || (!file && !urlUpload) || (urlUpload && !fileUrl)}
+            disabled={
+              loading || (!file && !urlUpload) || (urlUpload && !fileUrl)
+            }
           >
             {loading ? (
               <>
-                Uploading... <CircularProgress size={24} sx={{ marginLeft: 1 }} />
+                Uploading...{" "}
+                <CircularProgress size={24} sx={{ marginLeft: 1 }} />
               </>
             ) : (
               "Upload"
