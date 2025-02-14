@@ -36,6 +36,10 @@ const DriveFolderUploadModel: React.FC<Component> = ({
     : import.meta.env.VITE_API_URL;
 
   const dispatch = useAppDispatch();
+  console.log("hello");
+
+  console.log("import.meta.env.VITE_API_URL", import.meta.env.VITE_API_URL);
+  console.log("apiBaseUrl", apiBaseUrl);
 
   const selectFile = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files ? e.target.files[0] : null;
@@ -43,8 +47,7 @@ const DriveFolderUploadModel: React.FC<Component> = ({
       setFile(selectedFile);
       setFileName(selectedFile.name);
     }
-  console.log("apibase", apiBaseUrl);
-
+    console.log("apibase", apiBaseUrl);
   };
 
   const uploadData = async () => {
@@ -73,11 +76,12 @@ const DriveFolderUploadModel: React.FC<Component> = ({
         const preSignedResponse = await axios.post(
           `${apiBaseUrl}/file/get-preassignedulr`,
           { filename: fileName, fileType: file.type },
-          { withCredentials: true,
+          {
+            withCredentials: true,
             headers: {
               "Content-Type": "application/json",
             },
-           }
+          }
         );
         console.log("pre signed url", preSignedResponse);
 
