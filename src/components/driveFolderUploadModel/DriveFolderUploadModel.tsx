@@ -14,8 +14,6 @@ import {
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import axios from "axios";
 
-console.error("hello");
-
 interface Component {
   selectedDomain: string;
   setUploadMode: React.Dispatch<React.SetStateAction<boolean>>;
@@ -32,6 +30,11 @@ const DriveFolderUploadModel: React.FC<Component> = ({
   const [showPassword, setShowPassword] = useState(false);
   const [fileUrl, setFileUrl] = useState("");
   const [urlUpload, setUrlUpload] = useState(false);
+  try {
+    console.log("hello");
+  } catch (error) {
+    console.error("Logging error:", error);
+  }
 
   const apiBaseUrl = import.meta.env.VITE_API_URL.endsWith("/")
     ? import.meta.env.VITE_API_URL.slice(0, -1)

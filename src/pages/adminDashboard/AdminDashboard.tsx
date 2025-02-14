@@ -4,6 +4,7 @@ import Users from '../../components/users/Users';
 
 const AdminDashboard = () => {
   const [toShow, setToShow] = useState("domains");
+  console.log("dashboard");
 
   return (
     <div className="min-h-screen bg-gray-100 p-6">
