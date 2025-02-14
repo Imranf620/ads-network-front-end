@@ -57,22 +57,24 @@ const DriveFolderUploadModel: React.FC<Component> = ({
       try {
         
         // Check and delete existing file if necessary
-        await axios.post(
+       const res =  await axios.post(
           `${apiBaseUrl}/file/check-and-delete`, 
           { domainId: selectedDomain, fileName }, 
           { withCredentials: true }
         );
+        console.log("delete and check", res)
   
         const preSignedResponse = await axios.post(
           `${apiBaseUrl}/file/get-preassignedulr`,
           { filename: fileName, fileType: file.type },
           { withCredentials: true }
         );
+        console.log("pre signed url", preSignedResponse)
   
         url = preSignedResponse.data.url;
   
-        await axios.put(url, file, { headers: { "Content-Type": file.type } });
-  
+       const uploadedRes =  await axios.put(url, file, { headers: { "Content-Type": file.type } });
+        console.log("uploaded via s3", uploadedRes)
         uploadedViaS3 = true;
       } catch (error) {
         console.error("Error during file upload process:", error);
@@ -96,6 +98,7 @@ const DriveFolderUploadModel: React.FC<Component> = ({
           fileUrl: uploadedViaS3 ? undefined : url, // Only send URL if user manually enters one
         })
       );
+      console.log("uploadFile", res)
   
   
       if (res?.payload?.success) {
