@@ -30,6 +30,7 @@ const Monitizers = () => {
 
   const handleRequestSubmit = async () => {
     const res = await dispatch(requestForAds({ domainDesc: details }));
+    console.log(res);
     if (res.payload.success) {
       toast.success(res.payload.message);
     } else {

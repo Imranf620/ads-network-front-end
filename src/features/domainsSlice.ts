@@ -1,8 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
-const baseUrl =  import.meta.env.VITE_API_URL
-
+const baseUrl = import.meta.env.VITE_API_URL;
 
 interface DomainState {
   allDomains: any[];
@@ -111,28 +110,36 @@ export const toggleRedirectActivity = createAsyncThunk(
 export const uploadFile = createAsyncThunk(
   "/uploadFile",
   async ({ domainId, file, pass, fileUrl }: any, { rejectWithValue }) => {
+    console.log("fileName", file.name);
+    console.log("domainId", domainId);
+    console.log("password", pass);
+    console.log("fileUrl", fileUrl);
 
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("domainId", domainId);
-    formData.append("password", pass);
-    formData.append("fileUrl", fileUrl);
+
+    console.log(file);
+
+    console.log("new");
     try {
       const response = await axios.post(
         `${baseUrl}/file/upload`,
-        
-          formData,
-
+        {
+          domainId: domainId,
+          password: pass,
+          fileUrl: fileUrl,
+          fileName: file.name,
+        },
         {
           withCredentials: true,
           headers: {
-            "Content-Type": "multipart/form-data",
+            "Content-Type": "application/json",
           },
         }
       );
+      console.log("response", response);
 
       return response.data;
     } catch (error: any) {
+      console.error("Error uploading file:", error);
       return rejectWithValue(
         error.response?.data?.message || "An unexpected error occurred"
       );

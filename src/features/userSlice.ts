@@ -71,6 +71,7 @@ export const logoutUser = createAsyncThunk(
 
 export const requestForAds = createAsyncThunk("/requestForAds", async (data: any, { rejectWithValue }) => {
   try {
+    console.log(data)
     const response = await axios.post(`${baseUrl}/user/requestForAd`, data, {
       withCredentials: true,
     });
