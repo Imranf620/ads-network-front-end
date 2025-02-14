@@ -30,20 +30,8 @@ const DriveFolderUploadModel: React.FC<Component> = ({
   const [showPassword, setShowPassword] = useState(false);
   const [fileUrl, setFileUrl] = useState("");
   const [urlUpload, setUrlUpload] = useState(false);
-  try {
-    console.log("hello");
-  } catch (error) {
-    console.error("Logging error:", error);
-  }
-
-  const apiBaseUrl = import.meta.env.VITE_API_URL.endsWith("/")
-    ? import.meta.env.VITE_API_URL.slice(0, -1)
-    : import.meta.env.VITE_API_URL;
 
   const dispatch = useAppDispatch();
-
-  console.error("import.meta.env.VITE_API_URL", import.meta.env.VITE_API_URL);
-  console.error("apiBaseUrl", apiBaseUrl);
 
   const selectFile = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files ? e.target.files[0] : null;
@@ -51,50 +39,36 @@ const DriveFolderUploadModel: React.FC<Component> = ({
       setFile(selectedFile);
       setFileName(selectedFile.name);
     }
-    console.error("apibase", apiBaseUrl);
   };
+
 
   const uploadData = async () => {
     let uploadedViaS3 = false;
     let fileName = file?.name || "";
     let url = fileUrl;
-    console.error("apibase", apiBaseUrl);
-
+  
     setLoading(true);
 
     if (!urlUpload && file) {
       try {
+        
         // Check and delete existing file if necessary
-        const res = await axios.post(
-          `${apiBaseUrl}/file/check-and-delete`,
-          { domainId: selectedDomain, fileName },
-          {
-            withCredentials: true,
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
+        await axios.post(
+          `${import.meta.env.VITE_API_URL}/file/check-and-delete`, 
+          { domainId: selectedDomain, fileName }, 
+          { withCredentials: true }
         );
-        console.error("delete and check", res);
-
+  
         const preSignedResponse = await axios.post(
-          `${apiBaseUrl}/file/get-preassignedulr`,
+          `${import.meta.env.VITE_API_URL}/file/get-preassignedulr`,
           { filename: fileName, fileType: file.type },
-          {
-            withCredentials: true,
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
+          { withCredentials: true }
         );
-        console.error("pre signed url", preSignedResponse);
-
+  
         url = preSignedResponse.data.url;
-
-        const uploadedRes = await axios.put(url, file, {
-          headers: { "Content-Type": file.type },
-        });
-        console.error("uploaded via s3", uploadedRes);
+  
+        await axios.put(url, file, { headers: { "Content-Type": file.type } });
+  
         uploadedViaS3 = true;
       } catch (error) {
         console.error("Error during file upload process:", error);
@@ -102,12 +76,13 @@ const DriveFolderUploadModel: React.FC<Component> = ({
         return;
       }
     }
-
+  
     if ((!file && !urlUpload) || (urlUpload && !fileUrl)) {
       toast.error("Please select a file or enter a URL to upload");
       return;
     }
-
+  
+  
     try {
       const res = await dispatch(
         uploadFile({
@@ -117,8 +92,8 @@ const DriveFolderUploadModel: React.FC<Component> = ({
           fileUrl: uploadedViaS3 ? undefined : url, // Only send URL if user manually enters one
         })
       );
-      console.error("uploadFile", res);
-
+  
+  
       if (res?.payload?.success) {
         toast.success(res?.payload?.message);
         setUploadMode(false);
@@ -132,6 +107,7 @@ const DriveFolderUploadModel: React.FC<Component> = ({
       setLoading(false);
     }
   };
+  
 
   const handleClose = () => {
     setUploadMode(false);
@@ -201,8 +177,6 @@ const DriveFolderUploadModel: React.FC<Component> = ({
             sx={{ width: "100%", marginBottom: 2 }}
           />
         )}
-        <form>
-
         <Box sx={{ position: "relative", marginBottom: 2 }}>
           <TextField
             type={showPassword ? "text" : "password"}
@@ -223,8 +197,6 @@ const DriveFolderUploadModel: React.FC<Component> = ({
             {showPassword ? <VisibilityOff /> : <Visibility />}
           </IconButton>
         </Box>
-        </form>
-
         {fileName && (
           <Typography variant="body2" sx={{ marginBottom: 2 }}>
             Selected File: {fileName}
@@ -242,14 +214,11 @@ const DriveFolderUploadModel: React.FC<Component> = ({
               },
               width: "48%",
             }}
-            disabled={
-              loading || (!file && !urlUpload) || (urlUpload && !fileUrl)
-            }
+            disabled={loading || (!file && !urlUpload) || (urlUpload && !fileUrl)}
           >
             {loading ? (
               <>
-                Uploading...{" "}
-                <CircularProgress size={24} sx={{ marginLeft: 1 }} />
+                Uploading... <CircularProgress size={24} sx={{ marginLeft: 1 }} />
               </>
             ) : (
               "Upload"
