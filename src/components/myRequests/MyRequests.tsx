@@ -1,4 +1,4 @@
-import  { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useAppDispatch } from "../../hooks/useAppDispatch";
 import { myRequestsForAd } from "../../features/userSlice";
 import {
@@ -70,89 +70,124 @@ const MyRequests = () => {
 
     if (adType === "button") {
       return `<script>
+      document.addEventListener("DOMContentLoaded", function () {
        
-       document.addEventListener("DOMContentLoaded", function () {
-       
-        const link = document.createElement("link");
-        link.rel = "stylesheet";
-        link.href = "https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css";
-        document.head.appendChild(link);
-
-       const button = document.createElement("button");
-
-        Object.assign(button.style, {
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            width: "60px",
-            height: "60px",
-            borderRadius: "50%",
-            backgroundColor: "#007BFF",
-            color: "white",
-            fontSize: "12px",
-            fontWeight: "bold",
-            border: "none",
-            cursor: "pointer",
-            textAlign: "center",
-            padding: "10px",
-            transition: "background 0.3s ease",
-            position: "absolute",
-            bottom: "20px",
-            right: "20px",
-            transform: "translate(-50%, -50%)",
-        });
-
-        const icon = document.createElement("i");
-        icon.className = "bi bi-skip-forward"; 
-        Object.assign(icon.style, {
-            fontSize: "24px",
-            marginBottom: "5px"
-        });
-
-        const text = document.createElement("span");
-        text.innerText = "Skip Ad";
-
-        const badge = document.createElement("span");
-        badge.innerText = "1";
-        Object.assign(badge.style, {
-            position: "absolute",
-            top: "5px",
-            right: "5px",
-            backgroundColor: "red",
-            color: "white",
-            fontSize: "10px",
-            width: "18px",
-            height: "18px",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            borderRadius: "50%",
-            fontWeight: "bold",
-            boxShadow: "0px 0px 5px rgba(0, 0, 0, 0.2)"
-        });
-
-        button.appendChild(icon);
-        button.appendChild(text);
-        button.appendChild(badge);
-
-        button.addEventListener("mouseover", function () {
-            button.style.backgroundColor = "#0056b3";
-        });
-
-        button.addEventListener("mouseout", function () {
-            button.style.backgroundColor = "#007BFF";
-        });
-
-        button.onclick = () => {
-          const decodedUrl = atob('${encodedUrl}');
-          window.open(decodedUrl, '_blank');
-        };
-        document.body.appendChild(button);
-    });
-
-      </script>`;
+          const link = document.createElement("link");
+          link.rel = "stylesheet";
+          link.href = "https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css";
+          document.head.appendChild(link);
       
+          const style = document.createElement("style");
+          style.innerHTML = \`
+              @keyframes floatIn {
+                  0% { transform: translateY(50px); opacity: 0; }
+                  100% { transform: translateY(0); opacity: 1; }
+              }
+              .floating-btn {
+                  animation: floatIn 0.5s ease-out;
+                  transition: all 0.3s ease;
+              }
+              .floating-btn:hover {
+                  transform: scale(1.1);
+              }
+          \`;
+          document.head.appendChild(style);
+      
+          const adContainer = document.createElement("div");
+          Object.assign(adContainer.style, {
+              position: "fixed",
+              bottom: "20px",
+              right: "20px",
+              display: "flex",
+              gap: "12px",
+              alignItems: "center",
+              zIndex: "1000",
+          });
+      
+          function createButton(text, iconClass, bgColor, action) {
+              const button = document.createElement("button");
+              Object.assign(button.style, {
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  width: "65px",
+                  height: "65px",
+                  borderRadius: "50%",
+                  backgroundColor: bgColor,
+                  color: "white",
+                  fontSize: "12px",
+                  fontWeight: "bold",
+                  border: "none",
+                  cursor: "pointer",
+                  textAlign: "center",
+                  padding: "10px",
+                  position: "relative",
+                  boxShadow: "0px 5px 15px rgba(0, 0, 0, 0.3)",
+              });
+      
+              button.classList.add("floating-btn");
+      
+              const icon = document.createElement("i");
+              icon.className = \`bi \${iconClass}\`;
+              Object.assign(icon.style, {
+                  fontSize: "26px",
+                  marginBottom: "5px",
+              });
+      
+              const buttonText = document.createElement("span");
+              buttonText.innerText = text;
+      
+              button.appendChild(icon);
+              button.appendChild(buttonText);
+              button.onclick = action;
+      
+              return button;
+          }
+   
+        function openLink() {
+            const decodedUrl = atob("${encodedUrl}");
+          
+            const title = document.title 
+            const finalUrl = decodedUrl.includes("?") 
+                ? \`\${decodedUrl}&title=\${encodeURIComponent(title)}\`
+                : \`\${decodedUrl}?title=\${encodeURIComponent(title)}\`;
+            window.open(finalUrl, "_blank");
+        }
+
+      
+          const skipAdButton = createButton("Skip Ad", "bi-fast-forward", "#FF5733", openLink);
+      
+          const playButton = createButton("Play", "bi-play-circle", "#28a745", openLink);
+      
+          const closeButton = document.createElement("button");
+          Object.assign(closeButton.style, {
+              position: "absolute",
+              top: "-10px",
+              right: "-10px",
+              width: "25px",
+              height: "25px",
+              borderRadius: "50%",
+              backgroundColor: "red",
+              color: "white",
+              fontSize: "16px",
+              border: "none",
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontWeight: "bold",
+          });
+          closeButton.innerText = "×";
+          closeButton.onclick = () => adContainer.remove();
+      
+          adContainer.appendChild(skipAdButton);
+          adContainer.appendChild(playButton);
+          adContainer.appendChild(closeButton);
+      
+          document.body.appendChild(adContainer);
+      });
+      </script>`;
     }
 
     if (adType === "smartLink") {
@@ -235,37 +270,33 @@ const MyRequests = () => {
                   {request.approved ? "Approved" : "Pending"}
                 </Typography>
 
-                
-
                 {request.approved && request.assignedDomain && (
                   <>
-                  <Typography>
-                    Total Clicks :
-                    {request?.totalClicks}
-                  </Typography>
-                  <div className="mt-4 space-x-2">
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      onClick={() => handleDialogOpen(request, "popup")}
-                    >
-                      Popup Ad
-                    </Button>
-                    <Button
-                      variant="contained"
-                      color="secondary"
-                      onClick={() => handleDialogOpen(request, "button")}
-                    >
-                      Button Ad
-                    </Button>
-                    <Button
-                      variant="contained"
-                      onClick={() => handleDialogOpen(request, "smartLink")}
-                    >
-                      Smart Link Ad
-                    </Button>
-
-                  </div>
+                    <Typography>
+                      Total Clicks :{request?.totalClicks}
+                    </Typography>
+                    <div className="mt-4 space-x-2">
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={() => handleDialogOpen(request, "popup")}
+                      >
+                        Popup Ad
+                      </Button>
+                      <Button
+                        variant="contained"
+                        color="secondary"
+                        onClick={() => handleDialogOpen(request, "button")}
+                      >
+                        Button Ad
+                      </Button>
+                      <Button
+                        variant="contained"
+                        onClick={() => handleDialogOpen(request, "smartLink")}
+                      >
+                        Smart Link Ad
+                      </Button>
+                    </div>
                   </>
                 )}
               </CardContent>

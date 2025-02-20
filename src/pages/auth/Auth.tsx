@@ -58,7 +58,7 @@ const AuthPage = () => {
     setLoading(false);
     if (res.payload.success === true) {
       toast.success("Registration Successful");
-      navigate("/dashboard");
+      navigate("/monitizers");
     } else {
       toast.error(res.payload);
     }
